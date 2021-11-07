@@ -38,10 +38,12 @@ def drawLabelBoarders(t,size):
     t.goto(0,size)
     t.down()
     t.goto(0,0)
+    t.up()
 
     return
 
 def drawGrid(t,size):
+    t.down()
     # draw rows
     for row in range(size // 2):
         t.left(90)
@@ -71,7 +73,6 @@ def drawGrid(t,size):
     # return to start
     t.up()
     t.goto(0,0)
-    t.down()
     return
 
 
@@ -82,8 +83,10 @@ def setUpTurtle(size):
     
     # World coordinates: lower left (0,0), upper right (100,100)
     wn.setworldcoordinates(-5, -5, size+5, size+5)
-    #wn.tracer(0)
     t.speed(0)
+    t.shape("circle")
+    t.resizemode("user")
+    t.turtlesize(.5,.5)
     t.hideturtle()
 
     # draw boarders
@@ -115,11 +118,30 @@ def left(t):
 
 def fill(t,color):
     t.fillcolor(color)
+    t.bk(.5)
+    t.right(90)
+    t.fd(.5)
+    t.left(90)
+
+    # fill square
     t.begin_fill()
     for i in range(4):
         t.forward(1)
-        t.right(90)
+        t.left(90)
     t.end_fill()
+
+    # redraw lines
+    t.down()
+    for i in range(4):
+        t.forward(1)
+        t.left(90)
+    t.up()
+    
+    t.fd(.5)
+    t.left(90)
+    t.fd(.5)
+    t.right(90)
+    return
 
 
 
@@ -131,26 +153,36 @@ def main():
     size = int(input("What size grid do you want? "))
     t,wn = setUpTurtle(size)
     
-    ans = input("Do you want a grid? ").lower()
-    if ans == "y" or ans == "yes":
+    ans = input("Should the grid be drawn? ").lower()
+    if ans[0] == "y":
         drawGrid(t,size)
-    
+
+    t.goto(.5,.5)
+    t.showturtle()
     print("setup complete")
     
     # movement
     k = input("Move: ").lower()
-    while k != "q":
-        if k[0] == "w":
-            up(t)
-        elif k[0] == "s":
-            down(t)
-        elif k[0] == "d":
-            right(t)
-        elif k[0] == "a":
-            left(t)
-        elif k[0:2] == "f ":
+    while k:
+        if k[0] == "q":
+            break
+        if len(k) > 3 and k[0:2] == "f ":
             fill(t,k[2:])
-        t.dot()
+        
+        else:
+            for i in range(len(k)):
+                if k[i] == "w" or k[i] == "f":
+                    up(t)
+                elif k[i] == "s" or k[i] == "b":
+                    down(t)
+                elif k[i] == "d" or k[i] == "r":
+                    right(t)
+                elif k[i] == "a" or k[i] == "l":
+                    left(t)
+                elif k[i] == " ":
+                    fill(t,"white")
+                
+        #t.dot()
         k = input("Move: ").lower()
 
     return

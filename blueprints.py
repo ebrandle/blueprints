@@ -181,7 +181,9 @@ def main():
                     left(t)
                 elif k[i] == " ":
                     fill(t,"white")
-                
+                    
+        #maybe add action queue w/ ^?
+                    
         #t.dot()
         k = input("Move: ").lower()
 

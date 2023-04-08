@@ -1,6 +1,6 @@
 # Esther Brandle
 # Created: 2021/11/06
-# Modified: 2021/11/07
+# Modified: 2023/04/08
 
 import turtle
 #import asyncio
@@ -9,6 +9,14 @@ import turtle
 ###########
 '''SETUP'''
 ###########
+
+def setUpGrid(size):
+    row = ["-"]*size
+    grid = []
+    for x in range(size):
+        grid.append(row[:])
+    grid.append([0,0])
+    return grid
 
 def drawLabelBoarders(t,size):
     t.up()
@@ -100,23 +108,44 @@ def setUpTurtle(size):
 '''TURTLE EVENTS'''
 ###################
 
-def up(t):
+def up(t,blueprint):
+    # turtle
     t.left(90)
     t.forward(1)
     t.right(90)
 
-def down(t):
+    # logical board
+    blueprint[-1][0] += 1
+    return blueprint
+
+def down(t,blueprint):
+    # turtle
     t.right(90)
     t.forward(1)
     t.left(90)
 
-def right(t):
+    # logical board
+    blueprint[-1][0] -= 1
+    return blueprint
+
+def right(t,blueprint):
+    # turtle
     t.forward(1)
 
-def left(t):
+    # logical board
+    blueprint[-1][1] += 1
+    return blueprint
+
+def left(t,blueprint):
+    # turtle
     t.backward(1)
 
-def fill(t,color):
+    # logical board
+    blueprint[-1][1] -= 1
+    return blueprint
+
+def fill(t,color,blueprint):
+    # turtle
     t.fillcolor(color)
     t.bk(.5)
     t.right(90)
@@ -141,7 +170,12 @@ def fill(t,color):
     t.left(90)
     t.fd(.5)
     t.right(90)
-    return
+
+    # logical board
+    row = blueprint[-1][0]
+    col = blueprint[-1][1]
+    blueprint[row][col] = color
+    return blueprint
 
 
 
@@ -149,9 +183,15 @@ def fill(t,color):
 '''MAIN'''
 ##########
 
+def showBlueprint(blueprint):
+    print(str(blueprint[-1][0])+", "+str(blueprint[-1][1]))
+    for row in range(len(blueprint)-2,-1,-1):
+        print(blueprint[row])
+
 def main():
     size = int(input("What size grid do you want? "))
     t,wn = setUpTurtle(size)
+    blueprint = setUpGrid(size)
     
     ans = input("Should the grid be drawn? ").lower()
     if ans[0] == "y":
@@ -167,20 +207,21 @@ def main():
         if k[0] == "q":
             break
         if len(k) > 3 and k[0:2] == "f ":
-            fill(t,k[2:])
+            fill(t,k[2:],blueprint)
         
         else:
             for i in range(len(k)):
                 if k[i] == "w" or k[i] == "f":
-                    up(t)
+                    up(t,blueprint)
                 elif k[i] == "s" or k[i] == "b":
-                    down(t)
+                    down(t,blueprint)
                 elif k[i] == "d" or k[i] == "r":
-                    right(t)
+                    right(t,blueprint)
                 elif k[i] == "a" or k[i] == "l":
-                    left(t)
+                    left(t,blueprint)
                 elif k[i] == " ":
-                    fill(t,"white")
+                    fill(t,"white",blueprint)
+        showBlueprint(blueprint)
                     
         #maybe add action queue w/ ^?
                     

@@ -25,10 +25,25 @@ def setup():
     if ans != "" and ans[0] == "y":
         drawGrid(t,size)
 
-    t.goto(.5,.5)
+    if fileName != "":
+        drawFile(t,blueprint,size)
+        t.goto(blueprint[-1][1]+.5,blueprint[-1][0]+.5)
+    else:
+        t.goto(.5,.5)
+        
     t.showturtle()
     print("setup complete")
     return t,blueprint
+
+def drawFile(t,blueprint,size):
+    oldEndpoint = blueprint[-1]
+    for row in range(size):
+        for col in range(size):
+            if blueprint[row][col] != '-':
+                t.goto(col+.5,row+.5)
+                blueprint[-1] = [row,col]
+                fill(t,blueprint[row][col],blueprint)
+    blueprint[-1] = oldEndpoint
 
 def loadBlueprint(fileName):
     # read from file
@@ -271,7 +286,7 @@ def theLoopThatDoesStuff(t,blueprint):
                     left(t,blueprint)
                 elif k[i] == " ":
                     fill(t,"white",blueprint)
-        showBlueprint(blueprint)
+        #showBlueprint(blueprint)
                     
         #maybe add action queue w/ ^?
         k = input("Move: ").lower()

@@ -268,12 +268,22 @@ def showBlueprint(blueprint):
         print(blueprint[row])
 
 def theLoopThatDoesStuff(t,blueprint):
+    commandQueue = []
     k = input("Move: ").lower()
     while k:
+        # quit
         if k[0] == "q":
             return
+        
+        # get previous command
+        if k in "123456789" and len(k) == 1:
+            k = commandQueue[int(k)*(-1)]
+
+        # fill w/ color
         if len(k) > 3 and k[0:2] == "f ":
             fill(t,k[2:],blueprint)
+
+        # move
         else:
             for i in range(len(k)):
                 if k[i] == "w" or k[i] == "f":
@@ -286,9 +296,12 @@ def theLoopThatDoesStuff(t,blueprint):
                     left(t,blueprint)
                 elif k[i] == " ":
                     fill(t,"white",blueprint)
-        #showBlueprint(blueprint)
                     
-        #maybe add action queue w/ ^?
+        commandQueue.append(k)
+        if len(commandQueue) >= 10:
+            commandQueue.pop(0)
+        print(commandQueue)
+        
         k = input("Move: ").lower()
 
 def main():

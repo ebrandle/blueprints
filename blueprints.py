@@ -9,6 +9,49 @@ import turtle
 ###########
 '''SETUP'''
 ###########
+def setup():
+    # blueprint setup
+    fileName = input("Enter a file name to load blueprint (optional): ")
+    if fileName != "":
+        blueprint,size = loadBlueprint(fileName)
+    else:
+        size = int(input("What size grid do you want? "))
+        blueprint = setUpGrid(size)
+
+    # turtle setup
+    t,wn = setUpTurtle(size)
+    
+    ans = input("Should the grid be drawn? ").lower()
+    if ans != "" and ans[0] == "y":
+        drawGrid(t,size)
+
+    t.goto(.5,.5)
+    t.showturtle()
+    print("setup complete")
+    return t,blueprint
+
+def loadBlueprint(fileName):
+    # read from file
+    loadFile = open(fileName,"r")
+    blueprintLines = loadFile.readlines()
+    loadFile.close()
+
+    # initialize blank blueprint
+    size = len(blueprintLines)-1
+    blueprint = setUpGrid(size)
+
+    # update location
+    locationLs = blueprintLines[0].split()
+    blueprint[-1][0] = int(locationLs[0])
+    blueprint[-1][1] = int(locationLs[1])
+
+    # load blueprint
+    for row in range(1,size+1):
+        rowLs = blueprintLines[row].split()
+        for col in range(size):
+            blueprint[size-row][col] = rowLs[col]
+
+    return blueprint,size
 
 def setUpGrid(size):
     row = ["-"]*size
@@ -178,37 +221,44 @@ def fill(t,color,blueprint):
     return blueprint
 
 
+####################
+'''SAVE BLUEPRINT'''
+####################
+def ask_saveBlueprint(blueprint):
+    fileName = input("Enter a file name to save blueprint (optional): ")
+    if fileName != "":
+        saveBlueprint(fileName,blueprint)
+
+def saveBlueprint(fileName,blueprint):
+    saveFile = open(fileName,"w")
+
+    # save location
+    saveFile.write(str(blueprint[-1][0])+' '+str(blueprint[-1][1])+'\n')
+
+    # save blueprint
+    for row in range(len(blueprint)-2,-1,-1):
+        for col in blueprint[row]:
+            saveFile.write(col+' ')
+        saveFile.write("\n")
+    saveFile.close()
+    print("Blueprint saved")
+
 
 ##########
 '''MAIN'''
 ##########
-
 def showBlueprint(blueprint):
     print(str(blueprint[-1][0])+", "+str(blueprint[-1][1]))
     for row in range(len(blueprint)-2,-1,-1):
         print(blueprint[row])
 
-def main():
-    size = int(input("What size grid do you want? "))
-    t,wn = setUpTurtle(size)
-    blueprint = setUpGrid(size)
-    
-    ans = input("Should the grid be drawn? ").lower()
-    if ans[0] == "y":
-        drawGrid(t,size)
-
-    t.goto(.5,.5)
-    t.showturtle()
-    print("setup complete")
-    
-    # movement
+def theLoopThatDoesStuff(t,blueprint):
     k = input("Move: ").lower()
     while k:
         if k[0] == "q":
-            break
+            return
         if len(k) > 3 and k[0:2] == "f ":
             fill(t,k[2:],blueprint)
-        
         else:
             for i in range(len(k)):
                 if k[i] == "w" or k[i] == "f":
@@ -224,10 +274,12 @@ def main():
         showBlueprint(blueprint)
                     
         #maybe add action queue w/ ^?
-                    
-        #t.dot()
         k = input("Move: ").lower()
 
+def main():
+    t,blueprint=setup()
+    theLoopThatDoesStuff(t,blueprint)
+    ask_saveBlueprint(blueprint)
     return
 
 main()

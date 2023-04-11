@@ -232,7 +232,10 @@ def fill(t,color,blueprint):
     # logical board
     row = blueprint[-1][0]
     col = blueprint[-1][1]
-    blueprint[row][col] = color
+    if color == "white":
+        blueprint[row][col] = "-"
+    else:
+        blueprint[row][col] = color
     return blueprint
 
 

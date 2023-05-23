@@ -1,6 +1,6 @@
 # Esther Brandle
 # Created: 2021/11/06
-# Modified: 2023/04/09
+# Modified: 2023/04/11
 
 import turtle
 #import asyncio
@@ -19,7 +19,7 @@ def setup():
         blueprint = setUpGrid(size)
 
     # turtle setup
-    t,wn = setUpTurtle(size)
+    t,wn,button = setUpTurtle(size)
     
     ans = input("Should the grid be drawn? ").lower()
     if ans != "" and ans[0] == "y":
@@ -33,7 +33,7 @@ def setup():
         
     t.showturtle()
     print("setup complete")
-    return t,blueprint
+    return t,button,blueprint
 
 def drawFile(t,blueprint,size):
     oldEndpoint = blueprint[-1]
@@ -146,6 +146,7 @@ def setUpTurtle(size):
     # create t, wn
     t = turtle.Turtle()
     wn = turtle.Screen()
+    button = turtle.Turtle()
     
     # World coordinates: lower left (0,0), upper right (100,100)
     wn.setworldcoordinates(-5, -5, size+5, size+5)
@@ -157,8 +158,13 @@ def setUpTurtle(size):
 
     # draw boarders
     drawLabelBoarders(t,size)
+
+    # make button a button
+    button.shape("square")
+    button.shapesize(2,4)
+    button.fillcolor("grey")
     
-    return t,wn
+    return t,wn,button
 
 
 
@@ -270,10 +276,13 @@ def showBlueprint(blueprint):
     for row in range(len(blueprint)-2,-1,-1):
         print(blueprint[row])
 
-def theLoopThatDoesStuff(t,blueprint):
+def theLoopThatDoesStuff(t,button,blueprint):
     commandQueue = []
     k = input("Move: ").lower()
     while k:
+        # clicking stuff
+        #button.onclick(moveTurtle)
+        
         # quit
         if k[0] == "q":
             return
@@ -308,8 +317,8 @@ def theLoopThatDoesStuff(t,blueprint):
         k = input("Move: ").lower()
 
 def main():
-    t,blueprint=setup()
-    theLoopThatDoesStuff(t,blueprint)
+    t,button,blueprint=setup()
+    theLoopThatDoesStuff(t,button,blueprint)
     ask_saveBlueprint(blueprint)
     return
 
